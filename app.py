@@ -22,10 +22,12 @@ st.title("Mobilya Ürün Sorgulama Uygulaması")
 if "sepet" not in st.session_state:
     st.session_state.sepet = []
 
-# 🔽 Seri numarası seçimi
-seri = st.selectbox("Seri Numarası Seçin", options=[""] + df["Serial No."].astype(str).tolist())
+# 🔽 Seri numarası + kategori + tür seçimi
+df["Secenek"] = df.apply(lambda x: f"{x['Serial No.']} | {x['Main Category']} | {x['Type']}", axis=1)
+secim = st.selectbox("Ürün Seçin", options=[""] + df["Secenek"].tolist())
 
-if seri:
+if secim:
+    seri = secim.split(" | ")[0]  # sadece seri numarasını alıyoruz
     if seri in df["Serial No."].astype(str).values:
         urun = df[df["Serial No."].astype(str) == seri].iloc[0]
         st.write(f"**Kategori:** {urun['Main Category']}")
